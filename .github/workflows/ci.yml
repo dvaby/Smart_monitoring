@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+
+  linux:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            webkit-tag: ""
+            webkit-package: libwebkit2gtk-4.0-dev
+            go-flags: ""
+          - os: ubuntu-24.04
+            webkit-tag: webkit2_41
+            webkit-package: libwebkit2gtk-4.1-dev
+            go-flags: -tags=webkit2_41
+    runs-on: ${{ matrix.os }}
+    env:
+      WAILS_TAGS: ${{ matrix.webkit-tag }}
+      GOFLAGS: ${{ matrix.go-flags }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci && npm run build
+        working-directory: frontend
+      - run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libgtk-3-dev ${{ matrix.webkit-package }}
+      - run: go test ./...
+      - run: go vet ./...
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.17.1
+      - run: wails build -tags "$WAILS_TAGS" -nopackage -s -m -skipbindings
+      - run: go run github.com/OpenPeeDeeP/depguard/v2/cmd/depguard@v2.3.0 ./...
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci && npm run build
+        working-directory: frontend
+      - run: go test ./...
+      - run: go vet ./...
+      - run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.17.1
+      - run: wails build -platform windows/amd64 -nopackage -s -m -skipbindings
+      - run: go run github.com/OpenPeeDeeP/depguard/v2/cmd/depguard@v2.3.0 ./...

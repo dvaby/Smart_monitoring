@@ -1,0 +1,59 @@
+domain:
+  files:
+    - "**/internal/domain/{**,}*.go"
+  listMode: Strict
+  allow:
+    - "$gostd"
+usecases:
+  files:
+    - "**/internal/usecase/{**,}*.go"
+  listMode: Strict
+  allow:
+    - "$gostd"
+    - "snm/internal/domain"
+    - "snm/internal/usecase/port"
+adapters:
+  files:
+    - "**/internal/adapter/{**,}*.go"
+    - "!**/internal/adapter/{**,}*_test.go"
+  listMode: Strict
+  allow:
+    - "$gostd"
+    - "snm/internal/domain"
+    - "snm/internal/usecase"
+    - "snm/migrations"
+    - "github.com/"
+    - "golang.org/"
+    - "gopkg.in/"
+    - "modernc.org/"
+adapter-tests:
+  files:
+    - "**/internal/adapter/{**,}*_test.go"
+  listMode: Strict
+  allow:
+    - "$gostd"
+    - "snm/internal/domain"
+    - "snm/internal/usecase"
+    - "snm/internal/platform"
+    - "snm/migrations"
+    - "github.com/"
+    - "golang.org/"
+    - "gopkg.in/"
+    - "modernc.org/"
+platform:
+  files:
+    - "**/internal/platform/{**,}*.go"
+  listMode: Strict
+  allow:
+    - "$gostd"
+    - "github.com/"
+    - "fyne.io/systray"
+    - "golang.org/"
+    - "gopkg.in/"
+ports:
+  files:
+    - "**/internal/usecase/port/{**,}*.go"
+  listMode: Strict
+  allow:
+    - "$gostd"
+    - "snm/internal/domain"

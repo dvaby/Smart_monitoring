@@ -1,0 +1,12 @@
+build/bin/
+node_modules/
+frontend/dist/
+bin/
+dist/
+*.db
+*.db-shm
+*.db-wal
+*.log
+master.key
+snm
+snm.exe
