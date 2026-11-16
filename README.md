@@ -46,3 +46,5 @@ make build-windows
 ```
 
 Pada Ubuntu 24.04, gunakan `make build-linux TAGS=webkit2_41`; Ubuntu 22.04 memakai default WebKitGTK 4.0. Build Windows harus dijalankan pada Windows. CI membangun untuk Windows serta Ubuntu 22.04/24.04. Tray memakai `fyne.io/systray` melalui DBus StatusNotifierItem di Linux, tanpa dependency GTK/AppIndicator tersendiri. Lihat [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md) untuk uji tray, status uji Telegram, dan hal yang masih harus diverifikasi.
+
+davin and tegar
